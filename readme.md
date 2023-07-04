@@ -300,7 +300,7 @@ Note that from the created order, an update is made to the customer associated w
 
 ### **Containers With Cassandra**
 
-If you want just a single node to test your code and persist some data, you can use the example in the `docker-compose` file, which is running a single Cassandra instance and exposing the ports to use out of the docker network. Remember that if you need to connect your Java application to a instance you need to set the application.yml with the correct contact-point which can be the container ip address, if you're not exposing the instance, ou the container name, you're running you're Java application in a docker container in the same database network.
+If you want just a single node to test your code and persist some data, you can use the example in the `docker-compose` file, which is running a single Cassandra instance and exposing the ports to use out of the docker network. Remember that if you need to connect your Java application to a instance you need to set the application.yml with the correct contact-point which can be the container ip address, if you're not exposing the instance, or the container name, if you're running your Java application in a docker container in the same database network.
 
 ```yaml
 version: '3.1'
@@ -355,7 +355,8 @@ After that, you can run `docker-compose -f docker-compose.yml up -d --scale cass
 
 <figure>
   <div align="center">
-    <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto;">
+    <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; max-width: 80%">
+    <br/>
     <figcaption >Figure 6: Cassandra Operator Storage.</figcaption>
   </div>
 </figure>
