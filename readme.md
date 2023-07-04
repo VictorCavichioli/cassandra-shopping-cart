@@ -13,6 +13,8 @@ This project is a demonstration of how to use Apache Cassandra for building a sh
 - [Query-driven modeling](#query-driven-modeling)
 - [Project Model](#project-model)
 - [How the service will work?](#how-the-service-will-work)
+- [Containers With Cassandra](#containers-with-cassandra)
+- [Introducing Cassandara on Kubernetes](#introducing-cassandara-on-kubernetes)
 - [Guides that can help you](#guides-that-can-help-you)
 - [Conclusions](#conclusions)
 - [References](#references)
@@ -296,6 +298,70 @@ public ResponseEntity<Order> insert(Order order) {
 ```
 Note that from the created order, an update is made to the customer associated with the order with a new order UUID, which will cause the list of orders for the customer to receive the newest order created by him. The main concept to work with Cassandra is to be aware that consistency problems are solved with business rules, for example, if it is not desired to include a **role** table, we can simply create an Enum, instead of performing a database query to evaluate the created access levels.
 
+### **Containers With Cassandra**
+
+If you want just a single node to test your code and persist some data, you can use the example in the `docker-compose` file, which is running a single Cassandra instance and exposing the ports to use out of the docker network. Remember that if you need to connect your Java application to a instance you need to set the application.yml with the correct contact-point which can be the container ip address, if you're not exposing the instance, ou the container name, you're running you're Java application in a docker container in the same database network.
+
+```yaml
+version: '3.1'
+services:
+  mycassandra:
+    image: cassandra
+    container_name: mycassandra
+    ports:
+      - "9042:9042" # Default port used for client-to-node communication.
+      - "7000:7000" # Default port used for inter-node communication within a Cassandra cluster.
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+volumes:
+  cassandra-data:
+```
+
+If you want to use a multi-node cluster, you can use the docker-compose file setting the seed node and the worker node.
+
+```yaml
+version: '3.1'
+services:
+  cassandra-seed:
+    image: cassandra
+    ports:
+      - "9042:9042" # Native transport
+      - "7199:7199" # JMX
+      - "9160:9160" # Thrift clients
+    environment:
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+
+  cassandra-node:
+    image: cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra-seed
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+
+    depends_on:
+      - "cassandra-seed"
+```
+
+After that, you can run `docker-compose -f docker-compose.yml up -d --scale cassandra-node=2` to run a cassandra cluster with two nodes. Note that it can be used to develop the Java application, but it's not good to use in productions, mainly when we're talking about persist data using multi-node cluster. The autor of this repository recommends to use the first `docker-compose` file to develop your own SpringBoot application, test some stuffs with the second, but for data operations, even with a test environment, is better to use e Kubernetes Cassandra Cluster, which we'll see in the next chapter.
+
+### **Introducing Cassandara on Kubernetes**
+
+<figure>
+  <div align="center">
+    <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto;">
+    <figcaption >Figure 6: Cassandra Operator Storage.</figcaption>
+  </div>
+</figure>
+
+The image above shows basic storage orchestration by StatefulSet applications, which have persistent operations and Write/Read transactions. In Kubernetes, the object type to use for applications that have state, like databases, is the StatefulSet[\[9\]](#references).
+
 ### **Guides that can help you**
 - [Build a book tracker app (Spring Boot + Cassandra)](https://www.youtube.com/watch?v=LxVGFBRpEFM&list=PLKY246dKRk4UJ7PmDZGhgczDoLx5bmmXy)
 - [Introdução ao Cassandra - Cassandra Day Brasil 2022](https://www.youtube.com/watch?v=iNOjDBpZ-CA)
@@ -315,3 +381,4 @@ Apache Cassandra is an extremely powerful database and if used correctly it is p
 - [6]: [User-Defined Types (UDTs)](https://cassandra.apache.org/doc/3.11/cassandra/cql/types.html#udts)
 - [7]: [What is Data Modeling?](https://cassandra.apache.org/doc/latest/cassandra/data_modeling/intro.html)
 - [8]: [Query-driven modeling](https://cassandra.apache.org/doc/latest/cassandra/data_modeling/intro.html)
+- [9]: [Using StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/)

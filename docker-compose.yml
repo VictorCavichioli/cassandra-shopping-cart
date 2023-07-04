@@ -5,3 +5,9 @@ services:
     container_name: mycassandra
     ports:
       - "9042:9042"
+      - "7000:7000"
+    volumes:
+      - "cassandra-data:/var/lib/cassandra"
+
+volumes:
+  cassandra-data:
