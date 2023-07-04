@@ -355,7 +355,7 @@ After that, you can run `docker-compose -f docker-compose.yml up -d --scale cass
 
 <figure>
   <div align="center">
-    <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; max-width: 80%">
+    <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; width: 500px;">
     <br/>
     <figcaption >Figure 6: Cassandra Operator Storage.</figcaption>
   </div>
