@@ -14,7 +14,7 @@ This project is a demonstration of how to use Apache Cassandra for building a sh
 - [Project Model](#project-model)
 - [How the service will work?](#how-service-will-work)
 - [Containers With Cassandra](#containers-with-cassandra)
-- [Introducing Cassandara on Kubernetes](#introducing-cassandara-on-kubernetes)
+- [Introducing Cassandra on Kubernetes](#introducing-cassandra-on-kubernetes)
 - [Guides that can help you](#guides-that-can-help-you)
 - [Conclusions](#conclusions)
 - [References](#references)
@@ -351,7 +351,7 @@ services:
 
 After that, you can run `docker-compose -f docker-compose.yml up -d --scale cassandra-node=2` to run a cassandra cluster with two nodes. Note that it can be used to develop the Java application, but it's not good to use in productions, mainly when we're talking about persist data using multi-node cluster. The autor of this repository recommends to use the first `docker-compose` file to develop your own SpringBoot application, test some stuffs with the second, but for data operations, even with a test environment, is better to use e Kubernetes Cassandra Cluster, which we'll see in the next chapter.
 
-### **Introducing Cassandara on Kubernetes**
+### **Introducing Cassandra on Kubernetes**
 
 <figure>
   <div align="center">
