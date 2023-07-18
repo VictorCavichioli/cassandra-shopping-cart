@@ -50,13 +50,13 @@ public class OrderService {
         Set<ProductOfferingType> orderProducts = order.getOrderProducts();
         Double finalPrice = 0.0;
         for (ProductOfferingType productOfferingType : orderProducts) {
-            ProductOffering productOffering = productOfferingService.getById(productOfferingType.getProductOfferingId());
+            ProductOffering productOffering = productOfferingService.getById(productOfferingType.getId());
             if (productOffering == null) {
-                throw new IllegalArgumentException("Product offering not found: " + productOfferingType.getProductOfferingId());
+                throw new IllegalArgumentException("Product offering not found: " + productOfferingType.getId());
             }
-            productOfferingType.setProductOfferingName(productOffering.getProductOfferingName());
-            productOfferingType.setProductOfferingPrice(productOffering.getProductOfferingPrice());
-            finalPrice += productOfferingType.getProductOfferingPrice();
+            productOfferingType.setName(productOffering.getProductOfferingName());
+            productOfferingType.setPrice(productOffering.getProductOfferingPrice());
+            finalPrice += productOfferingType.getPrice();
         }
         finalPrice = finalPrice - order.getOrderOfferingDiscount();
         order.setOrderOfferingTotalPrice(finalPrice);

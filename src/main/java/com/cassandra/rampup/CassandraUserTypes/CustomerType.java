@@ -1,33 +1,30 @@
 package com.cassandra.rampup.CassandraUserTypes;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
+
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@UserDefinedType("product_offering_type")
+@UserDefinedType("customer_type")
 @Data
 @AllArgsConstructor
-public class ProductOfferingType {
+@NoArgsConstructor
+public class CustomerType {
 
     @CassandraType(type = Name.UUID)
-    @Column("id")
+    @Column("cus_id")
     private UUID id;
 
+    @CassandraType(type = Name.UUID)
+    @Column("use_id")
+    private UUID userId;
+
     @CassandraType(type = Name.TEXT)
-    @Column("name")
+    @Column("cus_name")
     private String name;
-
-    @CassandraType(type = Name.DOUBLE)
-    @Column("price")
-    private Double price;
-
-    @CassandraType(type = Name.BLOB)
-    @Column("image")
-    private ByteBuffer image;
-    
 }

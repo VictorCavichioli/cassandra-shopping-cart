@@ -5,6 +5,7 @@ This project is a demonstration of how to use Apache Cassandra for building a sh
 ### **Table of Contents**
 
 - [Introduction about Apache Cassandra](#introduction-about-apache-cassandra)
+- [Partitions](#partitions)
 - [Replication ensures reliability and fault tolerance](#replication-ensures-reliability-and-fault-tolerance)
 - [Apache Cassandra vs Relational Database](#apache-cassandra-vs-relational-database)
 - [Cassandra Data Types](#cassandra-data-types)
@@ -38,6 +39,36 @@ All nodes participate in a masterless cluster, meaning there is no primary node.
     <figcaption >Figure 1: Distribution provides power and resilience.</figcaption>
   </div>
 </figure>
+
+### Partitions
+The partition-key plays a crucial role in determining the placement of data on the ring, significantly impacting query efficiency. During the data insertion process, a consistent hashing algorithm partitions the data and assigns a hash number to the partition-key, ensuring accurate placement on the ring.
+
+To optimize for a specific location, such as grouping data by state, our application needs to be designed accordingly. By making the state field the logical grouping for the data, we can leverage this characteristic to improve ring efficiency.
+
+<figure>
+  <div align="center">
+    <img src="images/partitions.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; max-width: 50%;">
+    <figcaption >Figure 2: Partitions.</figcaption>
+  </div>
+</figure>
+
+In scenarios with multiple partitions based on state, we must ensure that the primary key includes the state field. When defining the primary key as state, we establish two things: the uniqueness of the record and its partitioning based on the state. However, relying solely on the state as the primary key would lead to inefficient record overwrites. To avoid this, we include another element in the primary key, such as an ID, to maintain uniqueness in real-life scenarios.
+
+```cql
+CREATE TABLE address_by_id (
+  add_id UUID,
+  add_street TEXT,
+  add_number INT,
+  add_zip_code TEXT,
+  add_state TEXT,
+  add_country TEXT,
+  PRIMARY KEY ((add_state), add_id) # --> state as the partition key and the id as a part of the primary key
+)
+```
+
+The partition-key remains crucial for determining the placement of data on the ring. It allows us to accurately locate data within the ring structure. This feature is particularly fascinating in Cassandra because it enables us to predict the destination of data when inserted into the ring. For instance, if we insert data for Texas into a 1000-node ring, we know precisely where it will reside. This characteristic simplifies data querying, as the consistent hashing algorithm ensures that queried data remains in the same location, eliminating the need for extensive searching.
+
+The process is highly efficient, utilizing a constant-time, order-one algorithm. When we search for data related to Texas, we can quickly locate it within the 1000-node ring.
 
 ### **Replication ensures reliability and fault tolerance**
 One piece of data can be replicated to multiple (replica) nodes, ensuring reliability and fault tolerance. Cassandra supports the notion of a replication factor (RF), which describes how many copies of your data should exist in the database. So far, our data has only been replicated to one replica (RF = 1). If we up this to a replication factor of two (RF = 2), the data needs to be stored on a second replica as well – and hence each node becomes responsible for a secondary range of tokens, in addition to its primary range. A replication factor of three ensures that there are three nodes (replicas) covering that particular token range, and the data is stored on yet another one [\[3\]](#references).

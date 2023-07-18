@@ -2,10 +2,10 @@ spring:
   data:
     cassandra:
       port: 9042
-      contact-points: mycassandra
-      keyspace-name: mykeyspace
+      contact-points: localhost
+      keyspace-name: shoppingcart
       entity-base-package: com.cassandra.rampup.model
-      schema-action: RECREATE
+      schema-action: CREATE-IF-NOT-EXISTS
       request:
         timeout: 10s
       connection:
