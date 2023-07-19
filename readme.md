@@ -48,7 +48,8 @@ To optimize for a specific location, such as grouping data by state, our applica
 
 <figure>
   <div align="center">
-    <img src="images/partitions.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; max-width: 50%;">
+    <img src="images/partitions.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; width: 500px;">
+    <br/>
     <figcaption >Figure 2: Partitions.</figcaption>
   </div>
 </figure>
