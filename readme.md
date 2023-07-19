@@ -15,6 +15,7 @@ This project is a demonstration of how to use Apache Cassandra for building a sh
 - [Project Model](#project-model)
 - [How the service will work?](#how-service-will-work)
 - [Containers With Cassandra](#containers-with-cassandra)
+- [Cassandra Multi DC Cluster](#cassandra-multi-dc-cluster)
 - [Introducing Cassandra on Kubernetes](#introducing-cassandra-on-kubernetes)
 - [Guides that can help you](#guides-that-can-help-you)
 - [Conclusions](#conclusions)
@@ -76,7 +77,7 @@ One piece of data can be replicated to multiple (replica) nodes, ensuring reliab
 <figure>
   <div align="center">
     <img src="https://cassandra.apache.org/_/_images/diagrams/apache-cassandra-diagrams-05.jpg" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; max-width: 50%;">
-    <figcaption >Figure 2: Reliability and fault tolerance.</figcaption>
+    <figcaption >Figure 3: Reliability and fault tolerance.</figcaption>
   </div>
 </figure>
 
@@ -380,7 +381,20 @@ services:
       - "cassandra-seed"
 ```
 
-After that, you can run `docker-compose -f docker-compose.yml up -d --scale cassandra-node=2` to run a cassandra cluster with two nodes. Note that it can be used to develop the Java application, but it's not good to use in productions, mainly when we're talking about persist data using multi-node cluster. The autor of this repository recommends to use the first `docker-compose` file to develop your own SpringBoot application, test some stuffs with the second, but for data operations, even with a test environment, is better to use e Kubernetes Cassandra Cluster, which we'll see in the next chapter.
+After that, you can run `docker-compose -f docker-compose.yml up -d --scale cassandra-node=2` to run a cassandra cluster with two nodes. Note that it can be used to develop the Java application, but it's not good to use in productions, mainly when we're talking about persist data using multi-node cluster. The autor of this repository recommends to use the first `docker-compose` file to develop your own SpringBoot application, test some stuffs with the second, but for data operations, even with a test environment, is better to use e Kubernetes Cassandra Cluster.
+
+### Cassandra Multi DC Cluster
+Now we know how to use Apache Cassandra in a docker container, let's to do a introduction to Multi-Datacenter (DC) Architecture using Apache Cassandra.
+
+Apache Cassandra is a distributed NoSQL database known for its ability to handle massive amounts of data with high availability and fault tolerance. When dealing with geographically distributed applications, a Multi-Datacenter (DC) architecture becomes crucial to ensure low-latency access and disaster recovery. In a Multi-DC setup, Cassandra clusters are spread across multiple physical locations or data centers, enabling data to be replicated and accessed efficiently across different regions.
+
+<figure>
+  <div align="center">
+    <img src="images/cass-multi-dc.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; width: 500px;">
+    <br/>
+    <figcaption >Figure 6: Multi-Datacenter Architecture.</figcaption>
+  </div>
+</figure>
 
 ### **Introducing Cassandra on Kubernetes**
 
@@ -388,7 +402,7 @@ After that, you can run `docker-compose -f docker-compose.yml up -d --scale cass
   <div align="center">
     <img src="images/cass-operator-storage.png" alt="Alt Text" style="display: block; margin-left: auto; margin-right: auto; width: 500px;">
     <br/>
-    <figcaption >Figure 6: Cassandra Operator Storage.</figcaption>
+    <figcaption >Figure 7: Cassandra Operator Storage.</figcaption>
   </div>
 </figure>
 
