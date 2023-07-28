@@ -384,6 +384,74 @@ services:
 
 After that, you can run `docker-compose -f docker-compose.yml up -d --scale cassandra-node=2` to run a cassandra cluster with two nodes. Note that it can be used to develop the Java application, but it's not good to use in productions, mainly when we're talking about persist data using multi-node cluster. The autor of this repository recommends to use the first `docker-compose` file to develop your own SpringBoot application, test some stuffs with the second, but for data operations, even with a test environment, is better to use e Kubernetes Cassandra Cluster.
 
+Cassandra multi dc cluster using docker-compose:
+
+```yaml
+version: '3.1'
+services:
+  cassandra-seed-dc1-rack1-node1:
+    image: cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-seed-dc1-rack1-node1,cassandra-seed-dc2-rack1-node1
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+    volumes:
+      - ./cassandra/cassandra-rackdc-dc1-rack1.properties:/etc/cassandra/cassandra-rackdc.properties
+
+  cassandra-seed-dc2-rack1-node1:
+    image: cassandra
+    ports:
+      - "9043:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_DC=dc2
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-seed-dc1-rack1-node1,cassandra-seed-dc2-rack1-node1
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+    volumes:
+      - ./cassandra/cassandra-rackdc-dc2-rack1.properties:/etc/cassandra/cassandra-rackdc.properties
+
+  cassandra-node-dc1-rack1-node2:
+    image: cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_DC=dc1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-seed-dc1-rack1-node1,cassandra-seed-dc2-rack1-node1
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+    volumes:
+      - ./cassandra/cassandra-rackdc-dc1-rack1.properties:/etc/cassandra/cassandra-rackdc.properties
+
+  cassandra-node-dc2-rack1-node2:
+    image: cassandra
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_DC=dc2
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-seed-dc1-rack1-node1,cassandra-seed-dc2-rack1-node1
+      - CASSANDRA_PASSWORD=cassandra
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+    volumes:
+      - ./cassandra/cassandra-rackdc-dc2-rack1.properties:/etc/cassandra/cassandra-rackdc.properties
+```
+
 ### Cassandra Multi DC Cluster
 Now we know how to use Apache Cassandra in a docker container, let's to do a introduction to Multi-Datacenter (DC) Architecture using Apache Cassandra.
 

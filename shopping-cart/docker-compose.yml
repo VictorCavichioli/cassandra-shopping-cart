@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  mycassandra:
+    image: cassandra
+    container_name: mycassandra
+    ports:
+      - "9042:9042" # Default port used for client-to-node communication.
+      - "7000:7000" # Default port used for inter-node communication within a Cassandra cluster.
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+volumes:
+  cassandra-data:

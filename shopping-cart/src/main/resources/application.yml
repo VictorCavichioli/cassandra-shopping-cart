@@ -2,7 +2,7 @@ spring:
   data:
     cassandra:
       port: 9042
-      contact-points: localhost
+      contact-points: localhost/127.0.0.1
       keyspace-name: shoppingcart
       entity-base-package: com.cassandra.rampup.model
       schema-action: CREATE-IF-NOT-EXISTS

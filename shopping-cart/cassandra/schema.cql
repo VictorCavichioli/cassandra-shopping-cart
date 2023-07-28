@@ -1,4 +1,4 @@
-CREATE KEYSPACE shoppingcart WITH replication = {'class':'SimpleStrategy', 'replication_factor': 3};
+CREATE KEYSPACE shoppingcart WITH replication = {'class':'SimpleStrategy', 'replication_factor': 1};
 
 CREATE TYPE product_offering_type (
   id UUID,

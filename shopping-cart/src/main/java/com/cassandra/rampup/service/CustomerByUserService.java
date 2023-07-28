@@ -37,7 +37,7 @@ public class CustomerByUserService {
     }
 
     public ResponseEntity<CustomerByUser> updateCustomer(UUID customerId, Map<String, Object> fieldsToUpdate) {
-        CustomerByUser customer = customerRepository.findById(customerId).orElse(null);
+        CustomerByUser customer = customerRepository.findByCusId(customerId).orElse(null);
         if (customer == null) {
             return ResponseEntity.notFound().build();
         }

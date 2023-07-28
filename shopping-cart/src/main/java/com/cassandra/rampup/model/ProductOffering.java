@@ -12,7 +12,6 @@ import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import lombok.Data;
 
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
@@ -24,7 +23,7 @@ public class ProductOffering {
     @CassandraType(type = Name.TEXT)
     private String category;
 
-    @PrimaryKey("pro_id")
+    @PrimaryKeyColumn(name = "pro_id", type = PrimaryKeyType.CLUSTERED)
     @CassandraType(type = Name.UUID)
     private UUID id;
 

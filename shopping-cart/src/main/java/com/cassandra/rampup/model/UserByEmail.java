@@ -4,7 +4,6 @@ import java.util.UUID;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -19,11 +18,11 @@ public class UserByEmail {
     @CassandraType(type = Name.TEXT)
     private String useAuthority;
 
-    @PrimaryKey("use_email")
+    @PrimaryKeyColumn(name = "use_email", type = PrimaryKeyType.CLUSTERED)
     @CassandraType(type = Name.TEXT)
     private String useEmail;
 
-    @PrimaryKey("use_id")
+    @PrimaryKeyColumn(name = "use_id", type = PrimaryKeyType.CLUSTERED)
     @CassandraType(type = Name.UUID)
     private UUID useId;
 
